@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}AI Lecture Live{% endblock %}
+{% block body %}
+<main class="shell hero-shell">
+  <section class="hero-card">
+    <div class="brand-pill">AI LECTURE LIVE</div>
+    <h1>강의가<br><span>참여형으로 바뀝니다.</span></h1>
+    <p>QR로 참여하고, 익명 응답을 모아 실시간 통계와 자유의견을 강의실 화면에서 함께 봅니다.</p>
+    <div class="hero-actions">
+      {% if active %}
+        <a class="btn primary large" href="{{ url_for('today') }}">오늘의 강의 참여</a>
+        <a class="btn soft large" href="{{ url_for('live_session', session_id=active.id) }}">실시간 결과 보기</a>
+      {% else %}
+        <span class="status-chip">현재 활성화된 강의가 없습니다</span>
+      {% endif %}
+    </div>
+    <div class="mini-note">참가자 로그인 없음 · 이름/기관명 수집 안 함 · 민감정보 입력 금지</div>
+  </section>
+  <aside class="hero-visual" aria-hidden="true">
+    <div class="visual-card qr-mock"><div class="fake-qr"></div><b>SCAN & JOIN</b></div>
+    <div class="visual-card chart-mock"><span></span><span></span><span></span><span></span><small>LIVE</small></div>
+    <div class="visual-orb"></div>
+  </aside>
+</main>
+<footer class="public-footer"><a href="{{ url_for('admin_home') }}">관리자</a></footer>
+{% endblock %}
