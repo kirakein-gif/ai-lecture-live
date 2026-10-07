@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}관리자 · AI Lecture Live{% endblock %}
+{% block body_class %}admin-body{% endblock %}
+{% block body %}
+<header class="admin-topbar">
+  <div><div class="brand-pill small">AI LECTURE LIVE</div><h1>강의 관리</h1></div>
+  <form method="post" action="{{ url_for('admin_logout') }}"><button class="btn ghost small">로그아웃</button></form>
+</header>
+<main class="admin-shell">
+  <section class="admin-grid">
+    <div class="admin-main">
+      <div class="section-head"><div><span class="eyebrow">SESSIONS</span><h2>강의 세션</h2></div><span class="count-badge">{{ sessions|length }}개</span></div>
+      <div class="session-list">
+        {% for s in sessions %}
+          <article class="session-card {% if s.id == active_id %}active{% endif %}">
+            <div class="session-meta">
+              {% if s.id == active_id %}<span class="live-badge">● 오늘의 강의</span>{% else %}<span class="code-badge">{{ s.id }}</span>{% endif %}
+              <h3>{{ s.title }}</h3>
+              <p>{{ s.subtitle or '설명 없음' }}</p>
+            </div>
+            <div class="session-kpis"><strong>{{ s.response_count or 0 }}</strong><span>응답</span></div>
+            <div class="session-actions">
+              <a class="btn soft small" href="{{ url_for('admin_session', session_id=s.id) }}">설정</a>
+              <a class="btn ghost small" target="_blank" href="{{ url_for('live_session', session_id=s.id) }}">LIVE</a>
+              {% if s.id != active_id %}
+              <form method="post" action="{{ url_for('admin_activate_session', session_id=s.id) }}"><button class="btn primary small">활성화</button></form>
+              {% endif %}
+            </div>
+          </article>
+        {% else %}
+          <div class="empty-panel"><b>아직 강의가 없습니다.</b><span>오른쪽에서 첫 세션을 만들어보세요.</span></div>
+        {% endfor %}
+      </div>
+    </div>
+    <aside class="admin-side">
+      <form class="create-card" method="post" action="{{ url_for('admin_create_session') }}">
+        <span class="eyebrow">NEW SESSION</span>
+        <h2>새 강의 만들기</h2>
+        <label class="field-label">강의명</label>
+        <input class="text-input" name="title" value="행정환경의 변화와 인공지능 업무 활용" maxlength="100" required>
+        <label class="field-label">표시 설명</label>
+        <input class="text-input" name="subtitle" value="7급 승진자 교육 · 참여형 업무설문" maxlength="180">
+        <label class="check-line"><input type="checkbox" name="activate" value="1" checked><span>만든 뒤 오늘의 강의로 활성화</span></label>
+        <button class="btn primary wide" type="submit">세션 만들기</button>
+        <p class="helper">기본 7문항이 자동으로 들어갑니다. 만든 뒤 질문 문구와 선택지를 수정할 수 있습니다.</p>
+      </form>
+      <div class="fixed-qr-card">
+        <span class="eyebrow">FIXED QR</span>
+        <h3>PPT에는 이 QR 하나만</h3>
+        <img src="{{ url_for('qr_today') }}" alt="고정 QR">
+        <p><code>/today</code>가 현재 활성화된 강의로 연결됩니다.</p>
+        <a class="btn soft wide" href="{{ url_for('qr_today', download=1) }}">고정 QR PNG 저장</a>
+      </div>
+    </aside>
+  </section>
+</main>
+{% endblock %}
