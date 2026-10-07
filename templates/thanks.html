@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}응답 완료{% endblock %}
+{% block body %}
+<main class="center-page participant-body">
+  <section class="message-card thanks-card">
+    <div class="success-check">✓</div>
+    <div class="brand-pill">응답 완료</div>
+    <h1>감사합니다.</h1>
+    <p>여러분의 응답은 강의 중 실시간 통계와 업무 재설계 실습에 활용됩니다.</p>
+    <a class="btn soft" href="{{ url_for('join_session', session_id=s.id) }}">내 응답 다시 작성</a>
+  </section>
+</main>
+{% endblock %}
