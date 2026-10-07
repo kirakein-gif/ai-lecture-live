@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}LIVE · {{ s.title }}{% endblock %}
+{% block body_class %}live-body{% endblock %}
+{% block body %}
+<header class="live-header">
+  <div><div class="live-label"><span></span> LIVE</div><h1>{{ s.title }}</h1><p>{{ s.subtitle or '' }}</p></div>
+  <div class="respond-counter"><strong id="responseCount">0</strong><span>responses</span></div>
+</header>
+<main class="live-shell">
+  <section class="kpi-row">
+    <article class="kpi-card blue"><span>가장 많은 업무 분야</span><strong id="topCategory">응답 대기 중</strong><small id="topCategoryCount">-</small></article>
+    <article class="kpi-card"><span>AI 도움 기대</span><strong id="aiAverage">-</strong><small>5점 평균</small></article>
+    <article class="kpi-card"><span>가장 큰 불편</span><strong id="topReason">응답 대기 중</strong><small id="topReasonCount">-</small></article>
+  </section>
+  <section class="live-grid">
+    <article class="live-panel chart-panel"><div class="panel-head"><div><span class="eyebrow">WORK</span><h2>업무 분야</h2></div></div><div id="categoryChart" class="bar-chart"></div></article>
+    <article class="live-panel chart-panel"><div class="panel-head"><div><span class="eyebrow">WHY</span><h2>번거로운 이유</h2></div></div><div id="reasonChart" class="bar-chart"></div></article>
+    <article class="live-panel keyword-panel"><div class="panel-head"><div><span class="eyebrow">WORDS</span><h2>지금 많이 나온 말</h2></div></div><div id="keywordCloud" class="keyword-cloud"><span class="muted">응답이 들어오면 자동으로 나타납니다.</span></div></article>
+    <article class="live-panel response-panel"><div class="panel-head"><div><span class="eyebrow">VOICES</span><h2>실제 업무 이야기</h2></div><button class="btn ghost small" id="shuffleBtn">다른 응답</button></div><div id="responseCards" class="response-cards"><div class="empty-live">아직 자유응답이 없습니다.</div></div></article>
+  </section>
+</main>
+<div class="update-indicator" id="updateIndicator">● LIVE · <span>연결 중</span></div>
+{% endblock %}
+{% block scripts %}
+<script>window.LIVE_API='{{ url_for('api_live', session_id=s.id) }}';</script>
+<script src="{{ url_for('static', filename='live.js') }}" defer></script>
+{% endblock %}
