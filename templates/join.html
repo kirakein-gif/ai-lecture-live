@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}{{ s.title }} · 참여{% endblock %}
+{% block body_class %}participant-body{% endblock %}
+{% block body %}
+<header class="participant-head">
+  <div class="brand-pill small">AI LECTURE LIVE</div>
+  <h1>{{ s.title }}</h1>
+  {% if s.subtitle %}<p>{{ s.subtitle }}</p>{% endif %}
+  <div class="privacy-note">익명 참여 · 이름/기관명 입력 불필요 · 개인정보와 민감정보는 적지 마세요.</div>
+</header>
+<main class="survey-shell">
+  {% if errors %}<div class="alert error"><b>확인이 필요한 항목이 있습니다.</b><ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul></div>{% endif %}
+  <form method="post" id="surveyForm">
+    <input type="hidden" name="client_id" id="clientId">
+    {% for q in s.questions %}
+    <section class="survey-card">
+      <div class="survey-num">{{ '%02d'|format(loop.index) }}</div>
+      <div class="survey-content">
+        <h2>{{ q.label }}{% if q.required %}<em>필수</em>{% endif %}</h2>
+        {% if q.type == 'single' %}
+          <div class="choice-grid">
+          {% for opt in q.options %}<label class="choice"><input type="radio" name="{{ q.id }}" value="{{ opt }}" {% if q.required %}required{% endif %}><span>{{ opt }}</span></label>{% endfor %}
+          </div>
+        {% elif q.type == 'multi' %}
+          <div class="choice-grid">
+          {% for opt in q.options %}<label class="choice checkbox"><input type="checkbox" name="{{ q.id }}" value="{{ opt }}"><span>{{ opt }}</span></label>{% endfor %}
+          </div>
+        {% elif q.type == 'scale' %}
+          <div class="scale-box"><div class="scale-labels"><span>{{ q.min_label }}</span><span>{{ q.max_label }}</span></div><div class="scale-options">{% for n in range(q.min, q.max + 1) %}<label><input type="radio" name="{{ q.id }}" value="{{ n }}" {% if q.required %}required{% endif %}><span>{{ n }}</span></label>{% endfor %}</div></div>
+        {% elif q.type == 'textarea' %}
+          <textarea class="textarea-input survey-textarea" name="{{ q.id }}" maxlength="2000" placeholder="{{ q.placeholder or '' }}" {% if q.required %}required{% endif %}></textarea>
+        {% else %}
+          <input class="text-input survey-input" name="{{ q.id }}" maxlength="500" placeholder="{{ q.placeholder or '' }}" {% if q.required %}required{% endif %}>
+        {% endif %}
+      </div>
+    </section>
+    {% endfor %}
+    <div class="submit-zone"><button class="btn primary submit-btn" type="submit">응답 제출하기</button><p>제출 후에도 같은 기기에서 다시 응답하면 기존 응답이 갱신됩니다.</p></div>
+  </form>
+</main>
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const key='aiLectureClient_{{ s.id }}';
+  let id=localStorage.getItem(key);
+  if(!id){id=(crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random().toString(36).slice(2));localStorage.setItem(key,id);}
+  document.getElementById('clientId').value=id;
+});
+</script>
+{% endblock %}
