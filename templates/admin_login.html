@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}관리자 로그인 · AI Lecture Live{% endblock %}
+{% block body %}
+<main class="center-page admin-bg">
+  <form class="login-card" method="post">
+    <div class="brand-pill">ADMIN</div>
+    <h1>강의 관리자</h1>
+    <p>강의 세션, 고정 QR, 실시간 결과를 관리합니다.</p>
+    {% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+    <label class="field-label">관리자 비밀번호</label>
+    <input class="text-input" type="password" name="password" autocomplete="current-password" required {% if not configured %}disabled{% endif %}>
+    <button class="btn primary wide" type="submit" {% if not configured %}disabled{% endif %}>로그인</button>
+    {% if not configured %}<div class="helper danger">Cloud Run에 <b>ADMIN_PASSWORD</b> 환경변수를 설정해야 합니다.</div>{% endif %}
+    <a class="text-link" href="{{ url_for('home') }}">← 홈으로</a>
+  </form>
+</main>
+{% endblock %}
