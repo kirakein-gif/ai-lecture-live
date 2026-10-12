@@ -2,6 +2,17 @@
 {% block title %}LIVE · {{ s.title }}{% endblock %}
 {% block body_class %}live-body{% endblock %}
 {% block body %}
+<div class="live-wait" id="liveWait" role="status" aria-live="polite">
+  <div class="live-wait-card">
+    <div class="live-wait-brand"><span></span> AI LECTURE LIVE</div>
+    <div class="live-wait-spinner" aria-hidden="true"></div>
+    <h1>실시간 결과를 준비하고 있습니다.</h1>
+    <p id="liveWaitMessage">서버에 연결하는 중입니다. 잠시만 기다려주세요.</p>
+    <div class="live-wait-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+    <button class="btn soft live-retry-btn" id="liveRetryBtn" type="button" hidden>다시 연결</button>
+    <small>강의 시작 전 이 화면을 한 번 열어두면 이후 접속이 더 빠릅니다.</small>
+  </div>
+</div>
 <header class="live-header">
   <div><div class="live-label"><span></span> LIVE</div><h1>{{ s.title }}</h1><p>{{ s.subtitle or '' }}</p></div>
   <div class="respond-counter"><strong id="responseCount">0</strong><span>responses</span></div>
