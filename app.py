@@ -273,6 +273,17 @@ def admin_activate_session(session_id):
     return redirect(request.referrer or url_for("admin_home"))
 
 
+@app.post("/admin/sessions/<session_id>/reset-responses")
+@admin_required
+def admin_reset_responses(session_id):
+    if not store.get_session(session_id):
+        abort(404)
+    deleted = store.clear_responses(session_id)
+    if deleted is None:
+        abort(404)
+    return redirect(url_for("admin_session", session_id=session_id, reset=deleted))
+
+
 @app.route("/join/<session_id>", methods=["GET", "POST"])
 def join_session(session_id):
     obj = store.get_session(session_id)
