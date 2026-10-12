@@ -22,6 +22,11 @@
             <div class="session-actions">
               <a class="btn soft small" href="{{ url_for('admin_session', session_id=s.id) }}">설정</a>
               <a class="btn ghost small" target="_blank" href="{{ url_for('live_session', session_id=s.id) }}">LIVE</a>
+              {% if s.response_count %}
+              <form method="post" action="{{ url_for('admin_reset_responses', session_id=s.id) }}" onsubmit="return confirm('이 강의의 응답 {{ s.response_count }}건을 모두 삭제할까요?\n질문과 강의 설정은 유지됩니다.');">
+                <button class="btn danger small" type="submit">초기화</button>
+              </form>
+              {% endif %}
               {% if s.id != active_id %}
               <form method="post" action="{{ url_for('admin_activate_session', session_id=s.id) }}"><button class="btn primary small">활성화</button></form>
               {% endif %}
