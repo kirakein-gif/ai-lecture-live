@@ -155,6 +155,16 @@ class LocalStore:
             rows.sort(key=lambda x: x.get("submitted_at", ""), reverse=True)
             return rows[:limit]
 
+    def clear_responses(self, session_id):
+        with self.lock:
+            d = self._read()
+            if session_id not in d["sessions"]:
+                return None
+            count = len(d["responses"].get(session_id, {}))
+            d["responses"][session_id] = {}
+            self._write(d)
+            return count
+
 
 class FirestoreStore:
     def __init__(self):
@@ -234,6 +244,24 @@ class FirestoreStore:
                 x["submitted_at"] = dt.isoformat()
             rows.append(x)
         return rows
+
+    def clear_responses(self, session_id):
+        session_ref = self.db.collection("sessions").document(session_id)
+        if not session_ref.get().exists:
+            return None
+
+        responses_ref = session_ref.collection("responses")
+        deleted = 0
+        while True:
+            docs = list(responses_ref.limit(400).stream())
+            if not docs:
+                break
+            batch = self.db.batch()
+            for doc in docs:
+                batch.delete(doc.reference)
+            batch.commit()
+            deleted += len(docs)
+        return deleted
 
 
 def get_store():
